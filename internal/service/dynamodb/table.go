@@ -2269,8 +2269,6 @@ func flattenReplicaDescription(apiObject *awstypes.ReplicaDescription) map[strin
 		tfMap["region_name"] = aws.ToString(apiObject.RegionName)
 	}
 
-	tfMap["deletion_protection_enabled"] = apiObject.DeletionProtectionEnabled
-
 	return tfMap
 }
 
