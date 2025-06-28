@@ -1571,21 +1571,21 @@ func updatePITR(ctx context.Context, conn *dynamodb.Client, tableName string, en
 }
 
 func updateReplicaDeletionProtection(ctx context.Context, conn *dynamodb.Client, tableName, region string, enabled bool, timeout time.Duration) error {
-       log.Printf("[DEBUG] Updating DynamoDB deletion protection to %v (%s)", enabled, region)
-       input := dynamodb.UpdateTableInput{
-               TableName:                 aws.String(tableName),
-               DeletionProtectionEnabled: aws.Bool(enabled),
-       }
-       optFn := func(o *dynamodb.Options) { o.Region = region }
-       if _, err := conn.UpdateTable(ctx, &input, optFn); err != nil {
-               return fmt.Errorf("updating deletion protection: %w", err)
-       }
+	log.Printf("[DEBUG] Updating DynamoDB deletion protection to %v (%s)", enabled, region)
+	input := dynamodb.UpdateTableInput{
+		TableName:                 aws.String(tableName),
+		DeletionProtectionEnabled: aws.Bool(enabled),
+	}
+	optFn := func(o *dynamodb.Options) { o.Region = region }
+	if _, err := conn.UpdateTable(ctx, &input, optFn); err != nil {
+		return fmt.Errorf("updating deletion protection: %w", err)
+	}
 
-       if _, err := waitReplicaActive(ctx, conn, tableName, region, timeout, replicaPropagationDelay); err != nil {
-               return fmt.Errorf("waiting for deletion protection update: %w", err)
-       }
+	if _, err := waitReplicaActive(ctx, conn, tableName, region, timeout, replicaPropagationDelay); err != nil {
+		return fmt.Errorf("waiting for deletion protection update: %w", err)
+	}
 
-       return nil
+	return nil
 }
 
 func updateReplica(ctx context.Context, conn *dynamodb.Client, d *schema.ResourceData) error {
